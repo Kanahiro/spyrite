@@ -37,21 +37,19 @@
 
 			// 複数アイコンを並べてスプライトの描画を一度に確認する
 			const iconSamples = [
-				{ icon: 'bank-JP', label: '銀行', coordinates: [139.767, 35.681] },
-				{ icon: 'castle-JP', label: '城', coordinates: [139.758, 35.685] },
+				{ icon: 'bank-JP', coordinates: [139.767, 35.681] },
+				{ icon: 'castle-JP', coordinates: [139.758, 35.685] },
 				{
 					icon: 'charging-station',
-					label: 'EV充電',
 					coordinates: [139.773, 35.677],
 				},
-				{ icon: 'cafe', label: 'カフェ', coordinates: [139.779, 35.684] },
+				{ icon: 'cafe', coordinates: [139.779, 35.684] },
 				{
 					icon: 'cricket',
-					label: 'クリケット',
 					coordinates: [139.761, 35.6895],
 				},
-				{ icon: 'doctor', label: '病院', coordinates: [139.751, 35.678] },
-				{ icon: 'beach', label: 'ビーチ', coordinates: [139.784, 35.676] },
+				{ icon: 'doctor', coordinates: [139.751, 35.678] },
+				{ icon: 'beach', coordinates: [139.784, 35.676] },
 			];
 
 			const sampleGeoJSON = {
@@ -91,15 +89,13 @@
 							layout: {
 								'icon-image': ['get', 'icon'],
 								'icon-size': 1,
-								'text-field': ['get', 'label'],
+								'text-field': ['get', 'icon'],
 								'text-font': ['Noto Sans Regular'],
 								'text-offset': [0, 1.2],
 								'text-anchor': 'top',
 							},
 							paint: {
-								'text-color': '#f8fafc',
-								'text-halo-color': '#111827',
-								'text-halo-width': 1,
+								'text-color': 'black',
 							},
 						},
 					],

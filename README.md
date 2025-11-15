@@ -14,6 +14,7 @@ Python library to create MapLibre/Mapbox compatible sprite file.
 
 ## Sprite Specification
 
+- Icon name is derived from the filename without extension (e.g., bank-JP.png -> bank-JP)
 - Height of each icon is uniform (icon_height)
 - Width of each icon is proportional to the original aspect ratio
 - Total width of the sprite image does not exceed max_width in almost all cases
