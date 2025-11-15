@@ -15,4 +15,8 @@ Python library to create MapLibre/Mapbox compatible sprite file.
 
 ```bash
 python -m spyrite icons_dir
+# This will generate sprite.png and sprite.json in the current directory
+
+python -m spyrite icons_dir --output-dir output_dir --max-width 2048 --icon-height 128
+# This will generate sprite.png and sprite.json in output_dir with specified parameters
 ```
