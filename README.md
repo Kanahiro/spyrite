@@ -11,10 +11,40 @@ Python library to create MapLibre/Mapbox compatible sprite file.
     - icon_height: Height of each icon, default is 64
 - Output: MapLibre/Mapbox compatible sprite files (sprite.png and sprite.json)
 
+## Sprite Specification
+
+- Height of each icon is uniform (icon_height)
+- Width of each icon is proportional to the original aspect ratio
+- Total width of the sprite image does not exceed max_width in almost all cases
+  - If an icon is too wide to fit in the remaining space of the current row, it is moved to the next row
+  - If an icon with fixed height of icon_height is wider than max_width, the icon won't be resized and set to a row as is. Then, width of the sprite image may exceed max_width.
+
 ## CLI Usage
 
 ```bash
 uv sync
+uv run python -m spyrite --help
+```
+
+```planetext
+usage: __main__.py [-h] [--output-dir OUTPUT_DIR] [--padding PADDING] [--icon-height ICON_HEIGHT]
+                   [--max-width MAX_WIDTH]
+                   icons_dir
+
+Generate a MapLibre/Mapbox compatible sprite sheet from PNG icons.
+
+positional arguments:
+  icons_dir             Directory that contains source icons
+
+options:
+  -h, --help            show this help message and exit
+  --output-dir OUTPUT_DIR
+                        Directory to write output files to (default: current directory)
+  --padding PADDING     XY gap (in px) inserted between icons (default: 2)
+  --icon-height ICON_HEIGHT
+                        Height (in px) each icon is resized to (default: 32)
+  --max-width MAX_WIDTH
+                        Maximum width (in px) of the generated sprite sheet (default: 1024)
 ```
 
 ```bash
