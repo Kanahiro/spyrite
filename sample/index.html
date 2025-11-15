@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Sprite sample (MapLibre GL JS)</title>
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/maplibre-gl@^5.0.0/dist/maplibre-gl.css"
+			crossorigin="anonymous"
+		/>
+		<style>
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+			}
+			html,
+			body {
+				height: 100%;
+				margin: 0;
+			}
+			#map {
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="map"></div>
+		<script
+			src="https://unpkg.com/maplibre-gl@^5.0.0/dist/maplibre-gl.js"
+			crossorigin="anonymous"
+		></script>
+		<script>
+			const spriteUrl = new URL('./sprite', document.baseURI).href;
+
+			// 複数アイコンを並べてスプライトの描画を一度に確認する
+			const iconSamples = [
+				{ icon: 'bank-JP', label: '銀行', coordinates: [139.767, 35.681] },
+				{ icon: 'castle-JP', label: '城', coordinates: [139.758, 35.685] },
+				{
+					icon: 'charging-station',
+					label: 'EV充電',
+					coordinates: [139.773, 35.677],
+				},
+				{ icon: 'cafe', label: 'カフェ', coordinates: [139.779, 35.684] },
+				{
+					icon: 'cricket',
+					label: 'クリケット',
+					coordinates: [139.761, 35.6895],
+				},
+				{ icon: 'doctor', label: '病院', coordinates: [139.751, 35.678] },
+				{ icon: 'beach', label: 'ビーチ', coordinates: [139.784, 35.676] },
+			];
+
+			const sampleGeoJSON = {
+				type: 'FeatureCollection',
+				features: iconSamples.map(({ icon, label, coordinates }) => ({
+					type: 'Feature',
+					properties: {
+						icon,
+						label: `${label} (${icon})`,
+					},
+					geometry: {
+						type: 'Point',
+						coordinates,
+					},
+				})),
+			};
+
+			const map = new maplibregl.Map({
+				container: 'map',
+				center: [139.767, 35.681],
+				zoom: 14,
+				style: {
+					version: 8,
+					sprite: spriteUrl,
+					glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
+					sources: {
+						sample_point: {
+							type: 'geojson',
+							data: sampleGeoJSON,
+						},
+					},
+					layers: [
+						{
+							id: 'sprite-point',
+							type: 'symbol',
+							source: 'sample_point',
+							layout: {
+								'icon-image': ['get', 'icon'],
+								'icon-size': 1,
+								'text-field': ['get', 'label'],
+								'text-font': ['Noto Sans Regular'],
+								'text-offset': [0, 1.2],
+								'text-anchor': 'top',
+							},
+							paint: {
+								'text-color': '#f8fafc',
+								'text-halo-color': '#111827',
+								'text-halo-width': 1,
+							},
+						},
+					],
+				},
+			});
+
+			map.addControl(new maplibregl.NavigationControl());
+		</script>
+	</body>
+</html>
