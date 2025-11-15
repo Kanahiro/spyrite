@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from spyrite.sprite import MakeSpriteOptions, _fix_icon_size, make_sprite
+from spyrite.make_sprite import MakeSpriteOptions, _fix_icon_size, make_sprite
 
 
 def _write_icon(

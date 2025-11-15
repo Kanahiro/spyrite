@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
-from .sprite import MakeSpriteOptions, make_sprite
+from .make_sprite import MakeSpriteOptions, make_sprite
 
 _DEFAULT_OPTIONS = MakeSpriteOptions()
 
