@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+
+# add root dir to sys.path for imports
 from pathlib import Path
 from typing import Iterable, Sequence
 

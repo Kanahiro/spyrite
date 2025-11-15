@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
-from .make_sprite import MakeSpriteOptions, make_sprite
+from spyrite.make_sprite import MakeSpriteOptions, make_sprite
 
 _DEFAULT_OPTIONS = MakeSpriteOptions()
 
@@ -32,7 +32,6 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "icons_dir",
         type=Path,
-        nargs="?",
         help="Directory that contains source icons",
     )
     parser.add_argument(
