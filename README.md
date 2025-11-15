@@ -54,3 +54,13 @@ uv run python -m spyrite icons_dir
 uv run python -m spyrite icons_dir --output-dir output_dir --max-width 2048 --icon-height 128
 # This will generate sprite.png and sprite.json in output_dir with specified parameters
 ```
+
+### Example
+
+```bash
+# convert maki-icons https://github.com/mapbox/maki
+uv run python -m spyrite sample/maki-icons --output-dir sample
+```
+
+![](sample/sprite.png)*sample/sprite.png*
+[sample/sprite.json](sample/sprite.json)
