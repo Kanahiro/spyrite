@@ -108,7 +108,7 @@ def test_main_generates_sprite_with_custom_options(tmp_path: Path, capsys) -> No
     assert metadata == expected_metadata
 
     stdout = capsys.readouterr().out
-    assert "sprite.png|json" in stdout
+    assert "sprite.png|sprite.json" in stdout
 
 
 def test_main_generates_retina_sprite(tmp_path: Path, capsys) -> None:
