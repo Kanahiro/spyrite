@@ -109,3 +109,61 @@ def test_main_generates_sprite_with_custom_options(tmp_path: Path, capsys) -> No
 
     stdout = capsys.readouterr().out
     assert "sprite.png|json" in stdout
+
+
+def test_main_generates_retina_sprite(tmp_path: Path, capsys) -> None:
+    icons_dir = tmp_path / "retina"
+    icons_dir.mkdir()
+
+    _make_icon(icons_dir, "retina_one", (8, 10), (255, 0, 0, 255))
+    _make_icon(icons_dir, "retina_two", (4, 10), (0, 255, 0, 255))
+
+    output_dir = tmp_path / "output"
+
+    exit_code = spyrite_main(
+        [
+            str(icons_dir),
+            "--output-dir",
+            str(output_dir),
+            "--icon-height",
+            "10",
+            "--padding",
+            "2",
+            "--max-width",
+            "30",
+            "--retina",
+        ]
+    )
+
+    assert exit_code == 0
+
+    sprite_path = output_dir / "sprite@2x.png"
+    metadata_path = output_dir / "sprite@2x.json"
+
+    with Image.open(sprite_path) as sprite:
+        assert sprite.size == (28, 22)
+
+    with metadata_path.open(encoding="utf-8") as fh:
+        metadata = json.load(fh)
+
+    expected_metadata = {
+        "retina_one": {
+            "x": 0,
+            "y": 0,
+            "width": 16,
+            "height": 20,
+            "pixelRatio": 2,
+        },
+        "retina_two": {
+            "x": 18,
+            "y": 0,
+            "width": 8,
+            "height": 20,
+            "pixelRatio": 2,
+        },
+    }
+
+    assert metadata == expected_metadata
+
+    stdout = capsys.readouterr().out
+    assert "sprite@2x.png|sprite@2x.json" in stdout

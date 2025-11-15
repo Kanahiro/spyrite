@@ -45,6 +45,23 @@ def test_make_sprite_wraps_rows_and_builds_metadata(tmp_path: Path) -> None:
     }
 
 
+def test_make_sprite_handles_retina_assets(tmp_path: Path) -> None:
+    paths = [
+        _write_icon(tmp_path, "retina_one", (4, 4)),
+        _write_icon(tmp_path, "retina_two", (8, 4)),
+    ]
+
+    options = MakeSpriteOptions(padding=2, icon_height=8, sprite_max_width=64, retina=True)
+
+    sprite = make_sprite(paths, options)
+
+    assert sprite.image.size == (52, 18)
+    assert sprite.json == {
+        "retina_one": {"x": 0, "y": 0, "width": 16, "height": 16, "pixelRatio": 2},
+        "retina_two": {"x": 18, "y": 0, "width": 32, "height": 16, "pixelRatio": 2},
+    }
+
+
 def test_fix_icon_size_returns_same_image_when_height_matches() -> None:
     original = Image.new("RGBA", (8, 10), (1, 2, 3, 4))
 
