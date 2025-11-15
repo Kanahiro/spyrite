@@ -2,10 +2,10 @@
 
 Python library to create MapLibre/Mapbox compatible sprite file.
 
-## Requirements
+## Features
 
 - Few dependencies (only Pillow)
-- Input: Image files of icons
+- Input: Image files of icons (no SVG support)
   - Parameters:
     - max_width: Maximum width of the sprite image, default is 1024
     - icon_height: Height of each icon, default is 64
@@ -14,9 +14,13 @@ Python library to create MapLibre/Mapbox compatible sprite file.
 ## CLI Usage
 
 ```bash
-python -m spyrite icons_dir
+uv sync
+```
+
+```bash
+uv run python -m spyrite icons_dir
 # This will generate sprite.png and sprite.json in the current directory
 
-python -m spyrite icons_dir --output-dir output_dir --max-width 2048 --icon-height 128
+uv run python -m spyrite icons_dir --output-dir output_dir --max-width 2048 --icon-height 128
 # This will generate sprite.png and sprite.json in output_dir with specified parameters
 ```
