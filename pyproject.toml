@@ -15,7 +15,7 @@ dev = [
     "ty>=0.0.1a26",
 ]
 
-[tool.poetry.scripts]
+[project.scripts]
 spyrite = "spyrite.__main__:main"
 
 [build-system]
