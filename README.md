@@ -19,7 +19,7 @@ Python library to create MapLibre/Mapbox compatible sprite file.
 - Width of each icon is proportional to the original aspect ratio
 - Total width of the sprite image does not exceed max_width in almost all cases
   - If an icon is too wide to fit in the remaining space of the current row, it is moved to the next row
-  - If an icon with fixed height of icon_height is wider than max_width, the icon won't be resized and set to a row as is. Then, width of the sprite image may exceed max_width.
+  - Even when one icon is wider than max_width, the icon won't be resized anymore and set to a row as is. Then, width of the sprite image may exceed max_width.
 
 ## CLI Usage
 
