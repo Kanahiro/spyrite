@@ -103,13 +103,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     # write files
     output_dir_path = Path(args.output_dir.expanduser())
     output_dir_path.mkdir(parents=True, exist_ok=True)
-    sprite.image.save(output_dir_path / "sprite.png")
-    metadata_path = output_dir_path / "sprite.json"
+    spritejson_filename = "sprite@2x.json" if args.retina else "sprite.json"
+    spritepng_filename = "sprite@2x.png" if args.retina else "sprite.png"
+    sprite.image.save(output_dir_path / spritepng_filename)
+    metadata_path = output_dir_path / spritejson_filename
     with metadata_path.open("w", encoding="utf-8") as fh:
         json.dump(sprite.json, fh, ensure_ascii=False)
         fh.write("\n")
 
-    print(f"sprite.png|json written to {output_dir_path}")
+    print(f"{spritepng_filename}|{spritejson_filename} written to {output_dir_path}")
 
     return 0
 

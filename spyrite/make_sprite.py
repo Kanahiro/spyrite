@@ -28,12 +28,14 @@ def make_sprite(
     x_offset = 0
     spritejson: dict[str, dict[str, int]] = {}
 
+    # Retina対応の場合は高さを2倍にする(幅は自動的にに調整される)
+    icon_height = options.icon_height * (2 if options.retina else 1)
+
     # 高さが揃ったImageオブジェクトの配列
     images: list[_Icon] = []
     for path in img_paths:
         img = Image.open(path).convert("RGBA")
-        if options.icon_height:
-            img = _fix_icon_size(img, options.icon_height)
+        img = _fix_icon_size(img, icon_height)
         images.append(_Icon(name=path.stem, image=img))
 
     # スプライトの配置を保存する二次元配列
@@ -51,10 +53,10 @@ def make_sprite(
             current_row_width = w + options.padding
             spritejson[img.name] = {
                 "x": 0,
-                "y": len(rows) * (options.icon_height + options.padding),
+                "y": len(rows) * (icon_height + options.padding),
                 "width": w,
                 "height": h,
-                "pixelRatio": 1,
+                "pixelRatio": 2 if options.retina else 1,
             }
             x_offset = w + options.padding
         else:
@@ -62,10 +64,10 @@ def make_sprite(
             current_row_width += w + options.padding
             spritejson[img.name] = {
                 "x": x_offset,
-                "y": len(rows) * (options.icon_height + options.padding),
+                "y": len(rows) * (icon_height + options.padding),
                 "width": w,
                 "height": h,
-                "pixelRatio": 1,
+                "pixelRatio": 2 if options.retina else 1,
             }
             x_offset += w + options.padding
     if current_row:
@@ -73,7 +75,7 @@ def make_sprite(
         rows.append(current_row)
 
     # 行ごとにならべたアイコンを一つの画像にまとめる
-    sprite_height = len(rows) * (options.icon_height + options.padding)
+    sprite_height = len(rows) * (icon_height + options.padding)
     sprite_width = 0  # 最長の行の幅
     for row in rows:
         row_width = sum(icon.image.size[0] + options.padding for icon in row)
@@ -86,7 +88,7 @@ def make_sprite(
             sprite_img.paste(icon.image, (x_offset, y_offset))
             w, h = icon.image.size
             x_offset += w + options.padding
-        y_offset += options.icon_height + options.padding
+        y_offset += icon_height + options.padding
 
     sprite = Sprite(image=sprite_img, json=spritejson)
     return sprite

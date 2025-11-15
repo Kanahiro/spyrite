@@ -28,9 +28,9 @@ spyrite --help
 ```
 
 ```planetext
-usage: __main__.py [-h] [--output-dir OUTPUT_DIR] [--padding PADDING] [--icon-height ICON_HEIGHT]
-                   [--max-width MAX_WIDTH]
-                   icons_dir
+usage: spyrite [-h] [--output-dir OUTPUT_DIR] [--padding PADDING] [--icon-height ICON_HEIGHT]
+               [--max-width MAX_WIDTH] [--retina]
+               icons_dir
 
 Generate a MapLibre/Mapbox compatible sprite sheet from PNG icons.
 
@@ -46,13 +46,14 @@ options:
                         Height (in px) each icon is resized to (default: 32)
   --max-width MAX_WIDTH
                         Maximum width (in px) of the generated sprite sheet (default: 1024)
+  --retina              Flag indicating that the output should be treated as retina assets.
 ```
 
 ```bash
 spyrite icons_dir
 # This will generate sprite.png and sprite.json in the current directory
 
-spyrite icons_dir --output-dir output_dir --max-width 2048 --icon-height 128
+spyrite icons_dir --output-dir output_dir --max-width 2048 --icon-height 128 --padding 4 --retina
 # This will generate sprite.png and sprite.json in output_dir with specified parameters
 ```
 
@@ -60,12 +61,13 @@ spyrite icons_dir --output-dir output_dir --max-width 2048 --icon-height 128
 
 ```bash
 # convert maki-icons https://github.com/mapbox/maki
-spyrite sample/maki-icons --output-dir sample
+spyrite sample/maki-icons --output-dir sample # sprite.json/png
+spyrite sample/maki-icons --output-dir sample --retina # sprite@2x.json/png
 ```
 
-![](sample/sprite.png)*sample/sprite.png*
+![](sample/sprite@2x.png)*sample/sprite@2x.png*
 
-[sample/sprite.json](sample/sprite.json)
+[sample/sprite@2x.json](sample/sprite@2x.json)
 
 ## Development
 
