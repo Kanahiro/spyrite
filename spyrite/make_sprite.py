@@ -5,6 +5,12 @@ from PIL import Image
 
 
 @dataclass
+class Sprite:
+    image: Image.Image
+    json: dict[str, dict[str, int]]
+
+
+@dataclass
 class MakeSpriteOptions:
     padding: int = 2
     retina: bool = False
@@ -12,22 +18,10 @@ class MakeSpriteOptions:
     sprite_max_width: int = 1024
 
 
-@dataclass
-class _Icon:
-    name: str
-    image: Image.Image
-
-
-@dataclass
-class Sprite:
-    image: Image.Image
-    json: dict[str, dict[str, int]]
-
-
 def make_sprite(
     img_paths: list[Path],
     options: MakeSpriteOptions = MakeSpriteOptions(),
-) -> Image.Image:
+) -> Sprite:
     if len(img_paths) == 0:
         raise ValueError("No icons found in the specified directory.")
 
@@ -96,6 +90,12 @@ def make_sprite(
 
     sprite = Sprite(image=sprite_img, json=spritejson)
     return sprite
+
+
+@dataclass
+class _Icon:
+    name: str
+    image: Image.Image
 
 
 def _fix_icon_size(icon_img: Image.Image, fixed_height: int) -> Image.Image:
