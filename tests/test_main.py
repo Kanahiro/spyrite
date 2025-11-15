@@ -1,4 +1,4 @@
-"""Tests for sprite generation script."""
+"""Integration tests for the spyrite CLI (``python -m spyrite``)."""
 
 from __future__ import annotations
 
@@ -6,75 +6,108 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from typing import Iterable, Sequence
 
 from PIL import Image
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
-SCRIPT_PATH = ROOT_DIR / "main.py"
-PADDING = 2
 
 
-def _run_script(tmp_path: Path) -> tuple[Path, Path]:
-    """Execute main.py inside tmp_path and return sprite & metadata paths."""
-
-    subprocess.run([sys.executable, str(SCRIPT_PATH)], cwd=tmp_path, check=True)
-    sprite_path = tmp_path / "sprite.png"
-    meta_path = tmp_path / "sprite.json"
-    return sprite_path, meta_path
+def _run_cli(args: Sequence[object], *, check: bool = True) -> subprocess.CompletedProcess[str]:
+    cmd = [sys.executable, "-m", "spyrite", *[str(arg) for arg in args]]
+    return subprocess.run(
+        cmd,
+        cwd=ROOT_DIR,
+        capture_output=True,
+        check=check,
+        text=True,
+    )
 
 
 def _make_icon(
-    directory: Path, name: str, size: tuple[int, int], color: tuple[int, int, int, int]
-) -> None:
-    img = Image.new("RGBA", size, color)
-    img.save(directory / f"{name}.png", format="PNG")
+    directory: Path,
+    name: str,
+    size: tuple[int, int],
+    color: Sequence[int],
+    fmt: str = "PNG",
+) -> Path:
+    mode = "RGBA" if fmt.lower() in {"png", "gif"} else "RGB"
+    fill_color: Iterable[int] = color if mode == "RGBA" else color[:3]
+    img = Image.new(mode, size, fill_color)
+    path = directory / f"{name}.{fmt.lower()}"
+    fmt_upper = fmt.upper()
+    if fmt_upper == "JPG":
+        fmt_upper = "JPEG"
+    img.save(path, format=fmt_upper)
+    return path
 
 
-def test_creates_minimal_sprite_when_no_icons(tmp_path):
-    """Running without icons should still create a blank sprite and empty metadata."""
+def test_cli_errors_when_icon_directory_is_missing(tmp_path: Path) -> None:
+    missing_dir = tmp_path / "no-icons"
 
-    (tmp_path / "icons").mkdir()
+    result = _run_cli([missing_dir], check=False)
 
-    sprite_path, meta_path = _run_script(tmp_path)
-
-    sprite = Image.open(sprite_path)
-    assert sprite.size == (1, 1)
-
-    with meta_path.open() as f:
-        assert json.load(f) == {}
+    assert result.returncode == 2
+    assert "Icon directory" in result.stderr
+    assert str(missing_dir) in result.stderr
 
 
-def test_creates_sprite_and_metadata_for_multiple_icons(tmp_path):
+def test_cli_errors_when_icon_directory_is_empty(tmp_path: Path) -> None:
     icons_dir = tmp_path / "icons"
     icons_dir.mkdir()
 
+    result = _run_cli([icons_dir], check=False)
+
+    assert result.returncode == 2
+    assert "No files found" in result.stderr
+    assert str(icons_dir) in result.stderr
+
+
+def test_cli_generates_sprite_with_custom_options(tmp_path: Path) -> None:
+    icons_dir = tmp_path / "assets"
+    icons_dir.mkdir()
+
     icon_specs = [
-        ("pin", (4, 6), (255, 0, 0, 255)),
-        ("shadow", (3, 4), (0, 0, 0, 128)),
-        ("marker", (5, 2), (0, 255, 0, 255)),
+        ("alpha", "png", (4, 5), (255, 0, 0, 255)),
+        ("beta", "jpg", (6, 5), (0, 255, 0)),
+        ("gamma", "png", (8, 5), (0, 0, 255, 255)),
     ]
+    for name, fmt, size, color in icon_specs:
+        _make_icon(icons_dir, name, size, color, fmt)
 
-    for name, size, color in icon_specs:
-        _make_icon(icons_dir, name, size, color)
+    output_dir = tmp_path / "output"
 
-    sprite_path, meta_path = _run_script(tmp_path)
+    icon_height = 10
+    padding = 3
+    max_width = 25
 
-    sprite = Image.open(sprite_path)
-    expected_width = sum(size[0] + PADDING for _, size, _ in icon_specs)
-    expected_height = max(size[1] for _, size, _ in icon_specs)
-    assert sprite.size == (expected_width, expected_height)
+    _run_cli(
+        [
+            icons_dir,
+            "--output-dir",
+            output_dir,
+            "--icon-height",
+            icon_height,
+            "--padding",
+            padding,
+            "--max-width",
+            max_width,
+        ]
+    )
 
-    with meta_path.open() as f:
-        metadata = json.load(f)
+    sprite_path = output_dir / "sprite.png"
+    metadata_path = output_dir / "sprite.json"
 
-    assert set(metadata.keys()) == {name for name, *_ in icon_specs}
+    with Image.open(sprite_path) as sprite:
+        assert sprite.size == (19, 39)
 
-    x_offset = 0
-    for name, size, _ in icon_specs:
-        entry = metadata[name]
-        assert entry["x"] == x_offset
-        assert entry["y"] == 0
-        assert entry["width"] == size[0]
-        assert entry["height"] == size[1]
-        assert entry["pixelRatio"] == 1
-        x_offset += size[0] + PADDING
+    with metadata_path.open(encoding="utf-8") as fh:
+        metadata = json.load(fh)
+
+    expected_metadata = {
+        "alpha": {"x": 0, "y": 0, "width": 8, "height": icon_height, "pixelRatio": 1},
+        "beta": {"x": 0, "y": 13, "width": 12, "height": icon_height, "pixelRatio": 1},
+        "gamma": {"x": 0, "y": 26, "width": 16, "height": icon_height, "pixelRatio": 1},
+    }
+
+    assert metadata == expected_metadata

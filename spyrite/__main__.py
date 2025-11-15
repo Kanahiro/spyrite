@@ -36,16 +36,10 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Directory that contains source icons",
     )
     parser.add_argument(
-        "--sprite-path",
+        "--output-dir",
         type=Path,
-        default=Path("sprite.png"),
-        help="Path of the generated sprite image (default: %(default)s)",
-    )
-    parser.add_argument(
-        "--metadata-path",
-        type=Path,
-        default=Path("sprite.json"),
-        help="Path of the generated sprite metadata JSON (default: %(default)s)",
+        default=".",
+        help="Directory to write output files to (default: current directory)",
     )
     parser.add_argument(
         "--padding",
@@ -72,11 +66,6 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Flag indicating that the output should be treated as retina assets.",
     )
     return parser
-
-
-def _ensure_parent(path: Path) -> Path:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    return path
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -112,16 +101,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     except ValueError as exc:  # Defensive: make_sprite also validates
         parser.exit(status=1, message=f"Error: {exc}\n")
 
-    sprite_path = _ensure_parent(args.sprite_path.expanduser())
-    sprite.image.save(sprite_path)
-
-    metadata_path = _ensure_parent(args.metadata_path.expanduser())
+    # write files
+    output_dir_path = Path(args.output_dir.expanduser())
+    output_dir_path.mkdir(parents=True, exist_ok=True)
+    sprite.image.save(output_dir_path / "sprite.png")
+    metadata_path = output_dir_path / "sprite.json"
     with metadata_path.open("w", encoding="utf-8") as fh:
         json.dump(sprite.json, fh, ensure_ascii=False, indent=2)
         fh.write("\n")
 
-    print(f"Sprite image written to {sprite_path}")
-    print(f"Metadata written to {metadata_path}")
+    print(f"sprite.png|json written to {output_dir_path}")
 
     return 0
 
