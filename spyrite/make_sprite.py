@@ -105,5 +105,5 @@ def _fix_icon_size(icon_img: Image.Image, fixed_height: int) -> Image.Image:
         return icon_img
 
     new_w = int(w * (fixed_height / h))
-    resized_img = icon_img.resize((new_w, fixed_height), Image.LANCZOS)
+    resized_img = icon_img.resize((new_w, fixed_height), Image.Resampling.LANCZOS)
     return resized_img
