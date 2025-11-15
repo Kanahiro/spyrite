@@ -66,7 +66,7 @@ spyrite sample/maki-icons --output-dir sample # sprite.json/png
 spyrite sample/maki-icons --output-dir sample --retina # sprite@2x.json/png
 ```
 
-![](sample/sprite@2x.png)*sample/sprite@2x.png*
+![](sample/sprite@2x.png)*[sample/sprite@2x.png](sample/sprite@2x.png)*
 
 [sample/sprite@2x.json](sample/sprite@2x.json)
 
