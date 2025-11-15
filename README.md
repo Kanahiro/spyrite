@@ -23,8 +23,8 @@ Python library to create MapLibre/Mapbox compatible sprite file.
 ## CLI Usage
 
 ```bash
-uv sync
-uv run python -m spyrite --help
+pip install spyrite
+spyrite --help
 ```
 
 ```planetext
@@ -49,10 +49,10 @@ options:
 ```
 
 ```bash
-uv run python -m spyrite icons_dir
+spyrite icons_dir
 # This will generate sprite.png and sprite.json in the current directory
 
-uv run python -m spyrite icons_dir --output-dir output_dir --max-width 2048 --icon-height 128
+spyrite icons_dir --output-dir output_dir --max-width 2048 --icon-height 128
 # This will generate sprite.png and sprite.json in output_dir with specified parameters
 ```
 
@@ -60,8 +60,19 @@ uv run python -m spyrite icons_dir --output-dir output_dir --max-width 2048 --ic
 
 ```bash
 # convert maki-icons https://github.com/mapbox/maki
-uv run python -m spyrite sample/maki-icons --output-dir sample
+spyrite sample/maki-icons --output-dir sample
 ```
 
 ![](sample/sprite.png)*sample/sprite.png*
+
 [sample/sprite.json](sample/sprite.json)
+
+## Development
+
+```bash
+uv sync
+uv run python -m spyrite
+uv run pytest
+uv run ruff check .
+uv run ty check spyrite
+```
