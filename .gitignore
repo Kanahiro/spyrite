@@ -6,11 +6,7 @@ dist/
 wheels/
 *.egg-info
 .pytest_cache/
+.ruff_cache/
 
 # Virtual environments
 .venv
-
-# local testing
-_icons
-sprite.json
-sprite.png
