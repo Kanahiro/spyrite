@@ -106,7 +106,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     sprite.image.save(output_dir_path / "sprite.png")
     metadata_path = output_dir_path / "sprite.json"
     with metadata_path.open("w", encoding="utf-8") as fh:
-        json.dump(sprite.json, fh, ensure_ascii=False, indent=2)
+        json.dump(sprite.json, fh, ensure_ascii=False)
         fh.write("\n")
 
     print(f"sprite.png|json written to {output_dir_path}")
